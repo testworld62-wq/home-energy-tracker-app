@@ -2,6 +2,7 @@ package com.codominator.deviceservice.service;
 
 import com.codominator.deviceservice.dto.DeviceDto;
 import com.codominator.deviceservice.entity.Device;
+import com.codominator.deviceservice.exception.DeviceNotFoundException;
 import com.codominator.deviceservice.repository.DeviceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,11 +28,11 @@ private final DeviceRepository deviceRepository;
     }
 
     public DeviceDto findDevice(Long id) {
-        return deviceRepository.findById(id).map(this::toDto).orElseThrow(()-> new IllegalArgumentException("device not found with this id:"+ id));
+        return deviceRepository.findById(id).map(this::toDto).orElseThrow(()-> new DeviceNotFoundException("device not found with this id:"+ id));
 
     }
     public DeviceDto updateDevice(Long id, DeviceDto deviceDto) {
-        Device device = deviceRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("device not found with this id:" + id));
+        Device device = deviceRepository.findById(id).orElseThrow(() -> new DeviceNotFoundException("device not found with this id:" + id));
         device.setName(deviceDto.getName());
         device.setLocation(deviceDto.getLocation());
         deviceRepository.save(device);
