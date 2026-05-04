@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: user-service-db
+    restart: always
+
+    environment:
+      MYSQL_ROOT_PASSWORD: shahid
+      MYSQL_DATABASE: home_energy_tracker
+      MYSQL_USER: shahid
+      MYSQL_PASSWORD: shahid
+
+    ports:
+      - "3306:3306"
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+    networks:
+      - microservices-net
+
+volumes:
+  mysql_data:
+
+networks:
+  microservices-net:
