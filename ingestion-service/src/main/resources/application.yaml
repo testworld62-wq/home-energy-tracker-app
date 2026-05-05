@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: ingestion-service
+  kafka:
+    bootstrap-servers: localhost:9092
+    template:
+      default-topic: energy-usage
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerialzer
+      value-serializer: org.apache.kafka.common.serialization.JsonSerialzer
+server:
+  port: 4003

@@ -19,7 +19,60 @@ services:
 
     networks:
       - microservices-net
+  kafka-service:
+    container_name: kafka-service
+    image: apache/kafka:latest
+    ports:
+      - "9092:9092"
+      - "9094:9094"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_CLUSTER_ID: "home_energy_tracking"
 
+      # Required for KRaft mode
+      KAFKA_PROCESS_ROLES: "broker,controller"
+
+      # Listeners (internal + external + controller)
+      KAFKA_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094"
+
+      # What clients see (VERY IMPORTANT)
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka-service:9092,EXTERNAL://localhost:9094"
+
+      # Map protocols
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT"
+
+      # Controller settings (required)
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka-service:9093"
+
+      # Single-node safe configs
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+
+      # Optional but useful
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
+      KAFKA_NUM_PARTITIONS: 1
+
+    volumes:
+      - ./docker/kafka_data:/var/lib/kafka/data
+    networks:
+      - microservices-net
+  kafka-ui:
+    container_name: kafka-ui
+    image: ghcr.io/kafbat/kafka-ui:latest
+    ports:
+      - "8070:8080"
+    depends_on:
+      - kafka-service
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-service:9092
+      DYNAMIC_CONFIG_ENABLE: 'true'
+    restart: unless-stopped
+    networks:
+      - microservices-net
   postgres:
     image: postgres:16
     container_name: device-service-postgres
@@ -43,6 +96,7 @@ services:
 volumes:
   mysql_data:
   postgres_data:
+  kafka_data:
 
 networks:
   microservices-net:
