@@ -1,12 +1,19 @@
 spring:
   application:
     name: ingestion-service
+  ingestion:
+    mock:
+      time: 5
+
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: localhost:9094
     template:
       default-topic: energy-usage
     producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerialzer
-      value-serializer: org.apache.kafka.common.serialization.JsonSerialzer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 server:
   port: 4003
+simulation:
+  interval:
+    ms: 5000
