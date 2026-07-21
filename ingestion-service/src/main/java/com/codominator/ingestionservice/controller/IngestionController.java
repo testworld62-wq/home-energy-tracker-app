@@ -1,7 +1,6 @@
 package com.codominator.ingestionservice.controller;
 
 import com.codominator.ingestionservice.dto.EnergyUsageDto;
-import com.codominator.ingestionservice.kafka.event.EnergyUsageEvent;
 import com.codominator.ingestionservice.service.IngestionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +15,8 @@ public class IngestionController {
         this.ingestionService = ingestionService;
     }
     @PostMapping
-    public ResponseEntity<?> createEvent(@RequestBody EnergyUsageDto energyUsageDto) {
+    public ResponseEntity<String> createEvent(@RequestBody EnergyUsageDto energyUsageDto) {
         ingestionService.ingestEnergyUsage(energyUsageDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("Data has been send successfully",HttpStatus.OK);
     }
 }

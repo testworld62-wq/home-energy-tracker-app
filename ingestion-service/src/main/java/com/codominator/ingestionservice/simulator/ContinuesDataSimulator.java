@@ -3,7 +3,7 @@ package com.codominator.ingestionservice.simulator;
 import com.codominator.ingestionservice.dto.EnergyUsageDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.http.*;
@@ -29,7 +29,7 @@ public class ContinuesDataSimulator implements CommandLineRunner {
     private static final String URL = "http://127.0.0.1:4003/api/v1/ingestion";
 
     @Override
-    public void run(String... args) {
+    public void run(String @NonNull ... args) {
         log.info("Continuous data simulation started...");
     }
 
